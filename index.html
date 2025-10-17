@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Share My Location</title>
+</head>
+<body>
+  <h2>Please allow location access</h2>
+  <p id="msg">Waiting for permission...</p>
+
+<script>
+navigator.geolocation.getCurrentPosition(function(pos){
+  const lat = pos.coords.latitude;
+  const lon = pos.coords.longitude;
+
+  fetch(https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon})
+    .then(response => response.json())
+    .then(data => {
+      const address = data.address;
+      const village = address.village || address.town || address.city || "Unknown";
+      const state = address.state || "";
+      document.getElementById("msg").innerText = Location: ${village}, ${state};
+      
+      const mapLink = https://www.google.com/maps?q=${lat},${lon};
+      document.body.innerHTML += <p><a href="${mapLink}" target="_blank">Open in Google Maps</a></p>;
+    });
+
+}, function(error){
+  document.getElementById("msg").innerText = "Permission denied or error.";
+});
+</script>
+</body>
+</html>
